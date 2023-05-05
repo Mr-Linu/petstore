@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 
 from .models import Pet
 
@@ -10,6 +10,9 @@ def home(request):
 
 
 def pet_detail(request, pet_id):
-    pet = Pet.objects.get(id=pet_id)
+    try:
+        pet = Pet.objects.get(id=pet_id)
+    except Pet.DoesNotExist:
+        return Http404("Pet not found")
     context = {'pet':pet}
     return render(request,"adoptions/pet_detail.html", context)
